@@ -69,10 +69,7 @@ header {
   gap: 20px;
   flex-wrap: wrap;
 }
-.header-nav {
-  display: flex;
-  gap: 20px;
-}
+.header-nav { display: flex; gap: 20px; }
 .header-nav a {
   font-family: 'Zen Kaku Gothic New', sans-serif;
   font-size: 0.78rem;
@@ -98,7 +95,7 @@ header {
   white-space: nowrap;
 }
 
-/* カテゴリーナビ（横並び・全幅） */
+/* カテゴリーナビ（横並び） */
 .cat-nav {
   max-width: 1080px;
   margin: 36px auto 0;
@@ -125,17 +122,23 @@ header {
   border-color: var(--ai);
   color: var(--paper);
 }
-.cat-count {
-  font-size: 0.62rem;
-  margin-left: 6px;
-  opacity: 0.7;
-}
+.cat-count { font-size: 0.62rem; margin-left: 6px; opacity: 0.7; }
 
-/* メインコンテンツ */
+/* メイン */
 .main-content {
   max-width: 1080px;
   margin: 36px auto 0;
   padding: 0 28px 96px;
+}
+
+/* ローディング */
+.loading {
+  text-align: center;
+  padding: 80px 0;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--gray);
 }
 
 /* 一覧 */
@@ -179,11 +182,7 @@ header {
   transition: color .2s;
 }
 .entry:hover h2 { color: var(--ai); }
-.entry .biblio {
-  font-size: 0.83rem;
-  color: var(--gray);
-  margin-top: 4px;
-}
+.entry .biblio { font-size: 0.83rem; color: var(--gray); margin-top: 4px; }
 .entry .excerpt {
   font-size: 0.9rem;
   line-height: 1.95;
@@ -252,14 +251,6 @@ article h1 {
   border-left: 3px solid var(--ai);
   line-height: 1.7;
 }
-.article-body figure { margin: 42px 0; }
-.article-body figcaption {
-  font-family: 'Zen Kaku Gothic New', sans-serif;
-  font-size: 0.7rem;
-  color: var(--gray);
-  margin-top: 9px;
-  letter-spacing: 0.08em;
-}
 .article-foot {
   margin-top: 64px;
   padding-top: 20px;
@@ -283,7 +274,7 @@ footer {
   color: var(--gray);
 }
 
-/* PCのみ：背表紙縦並びレイアウト */
+/* PC：背表紙縦並び */
 @media (min-width: 1024px) {
   .cat-nav { display: none; }
   .main-content {
@@ -332,7 +323,6 @@ footer {
   .spine-btn.active .spine-count { color: rgba(250,250,247,.6); }
   .list-content { min-width: 0; }
 }
-
 @media (max-width: 1023px) {
   .spine-wrap { display: none; }
 }
@@ -355,16 +345,12 @@ footer {
   </div>
 </header>
 
-<!-- タブレット・スマホ用カテゴリーナビ（横並び） -->
 <div class="cat-nav" id="cat-nav-mobile"></div>
 
 <div class="main-content">
-  <!-- PC用背表紙ナビ -->
   <div class="spine-wrap" id="spine-nav"></div>
 
-  <!-- コンテンツエリア -->
   <div class="list-content">
-    <!-- 記事ページ -->
     <div id="article-view">
       <button class="back-btn" onclick="showList()">← 一覧へ戻る</button>
       <article>
@@ -376,13 +362,15 @@ footer {
       </article>
     </div>
 
-    <!-- 一覧ページ -->
     <div id="list-view">
-      <div class="list-head">
-        <span id="list-label">最新の読書から</span>
-        <span id="list-count"></span>
+      <div class="loading" id="loading">読み込み中…</div>
+      <div id="list-body" style="display:none;">
+        <div class="list-head">
+          <span id="list-label">最新の読書から</span>
+          <span id="list-count"></span>
+        </div>
+        <div id="entries"></div>
       </div>
-      <div id="entries"></div>
     </div>
   </div>
 </div>
@@ -390,38 +378,13 @@ footer {
 <footer>Noriの書架 — 2026</footer>
 
 <script>
-// =============================================
-// データ：記事を増やすときはここに追加するだけ
-// =============================================
-const ENTRIES = [
-  {
-    id: 1,
-    cat: "社会学",
-    sub: "社会学 ＞ 消費社会論",
-    date: "2026.06.10",
-    title: "消費される「物語」と記号の体系——ボードリヤールを再読する",
-    biblio: "ジャン・ボードリヤール『消費社会の神話と構造』今村仁司・塚原史訳、紀伊國屋書店、1979年",
-    excerpt: "ここに冒頭の抜粋が入ります。一覧では書き出しだけを見せ、本文は記事ページでじっくり読んでもらう構成です。",
-    body: `<p>ここに本文が入ります。学術的な知見や解釈を中心に据えた感想文です。</p>
-           <h2>見出しのサンプル</h2>
-           <p>章立てに使う中見出しはこのように表示されます。</p>`
-  },
-];
+// ============================================
+// 設定：GASのウェブアプリURL
+// ============================================
+const API_URL = "https://script.google.com/macros/s/AKfycbwx5moU2QidgpknPryJ3913NLzVXQUivFeAOChIF9lYYmBPUAIfYhuX8ZrJqUiryQJr/exec";
 
-// =============================================
-// カテゴリー：増やすときはここに追加するだけ
-// =============================================
-const CATS = [
-  { label: "すべて" },
-  { label: "小説" },
-  { label: "批評" },
-  { label: "歴史" },
-  { label: "社会学" },
-];
-
-// =============================================
-// ロジック
-// =============================================
+let ENTRIES = [];
+let CATS = [{ label: "すべて" }];
 let activeCat = "すべて";
 let isDark = false;
 
@@ -438,7 +401,6 @@ function toggleTheme() {
 }
 
 function buildNav() {
-  // PC用背表紙
   const spine = document.getElementById("spine-nav");
   spine.innerHTML = "";
   CATS.forEach(({ label }) => {
@@ -449,7 +411,6 @@ function buildNav() {
     spine.appendChild(btn);
   });
 
-  // タブレット・スマホ用横並び
   const mobile = document.getElementById("cat-nav-mobile");
   mobile.innerHTML = "";
   CATS.forEach(({ label }) => {
@@ -514,8 +475,25 @@ function showList() {
   window.scrollTo(0, 0);
 }
 
-buildNav();
-renderList();
+// GASからデータを取得
+async function loadData() {
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    ENTRIES = data.entries || [];
+    CATS = [{ label: "すべて" }, ...(data.cats || []).map(c => ({ label: c }))];
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("list-body").style.display = "block";
+    buildNav();
+    renderList();
+  } catch (err) {
+    document.getElementById("loading").textContent =
+      "記事の読み込みに失敗しました。時間をおいて再読み込みしてください。";
+    console.error(err);
+  }
+}
+
+loadData();
 </script>
 </body>
 </html>

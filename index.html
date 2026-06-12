@@ -26,7 +26,6 @@
   --excerpt: #A0A09A;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
 body {
   background: var(--paper);
   color: var(--ink);
@@ -42,16 +41,14 @@ a { color: inherit; text-decoration: none; }
 header {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 48px 24px 0;
+  padding: 40px 28px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 16px;
 }
-.site-title {
-  cursor: pointer;
-}
+.site-title { cursor: pointer; }
 .site-title h1 {
   font-family: 'Shippori Mincho', serif;
   font-weight: 700;
@@ -64,17 +61,17 @@ header {
   font-size: 0.67rem;
   color: var(--gray);
   letter-spacing: 0.22em;
-  margin-top: 5px;
+  margin-top: 4px;
 }
 .header-right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 .header-nav {
   display: flex;
-  gap: 24px;
+  gap: 20px;
 }
 .header-nav a {
   font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -101,60 +98,45 @@ header {
   white-space: nowrap;
 }
 
-/* レイアウト */
-.layout {
+/* カテゴリーナビ（横並び・全幅） */
+.cat-nav {
   max-width: 1080px;
-  margin: 52px auto 0;
-  padding: 0 24px 96px;
-  display: grid;
-  grid-template-columns: 116px 1fr;
-  gap: 48px;
-}
-
-/* 背表紙ナビ */
-.spine-wrap {
-  position: sticky;
-  top: 48px;
-  align-self: start;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-}
-.spine-wrap::-webkit-scrollbar { width: 3px; }
-.spine-wrap::-webkit-scrollbar-thumb { background: #44444433; border-radius: 2px; }
-.spine-inner {
+  margin: 36px auto 0;
+  padding: 0 28px;
   display: flex;
-  flex-direction: column;
   gap: 8px;
+  flex-wrap: wrap;
 }
-.spine-btn {
-  writing-mode: vertical-rl;
+.cat-btn {
   font-family: 'Zen Kaku Gothic New', sans-serif;
   font-size: 0.76rem;
-  letter-spacing: 0.28em;
-  padding: 18px 9px;
+  letter-spacing: 0.14em;
+  padding: 7px 18px;
   border: 1px solid var(--hairline);
   background: var(--card);
   color: var(--ink);
-  min-height: 130px;
   cursor: pointer;
-  transition: all .25s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  transition: all .2s ease;
+  white-space: nowrap;
 }
-.spine-btn:hover { border-color: var(--ai); color: var(--ai); }
-.spine-btn.active {
+.cat-btn:hover { border-color: var(--ai); color: var(--ai); }
+.cat-btn.active {
   background: var(--ai);
   border-color: var(--ai);
   color: var(--paper);
 }
-.spine-count {
+.cat-count {
   font-size: 0.62rem;
-  letter-spacing: 0;
-  margin-top: 10px;
-  color: var(--gray);
+  margin-left: 6px;
+  opacity: 0.7;
 }
-.spine-btn.active .spine-count { color: rgba(250,250,247,.6); }
+
+/* メインコンテンツ */
+.main-content {
+  max-width: 1080px;
+  margin: 36px auto 0;
+  padding: 0 28px 96px;
+}
 
 /* 一覧 */
 .list-head {
@@ -171,7 +153,7 @@ header {
   padding: 30px 0;
   border-bottom: 1px solid var(--hairline);
   cursor: pointer;
-  display: block;
+  max-width: 760px;
 }
 .entry-meta {
   display: flex;
@@ -223,7 +205,7 @@ header {
   background: none;
   border: none;
   cursor: pointer;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
   padding: 0;
   transition: color .2s;
 }
@@ -253,7 +235,7 @@ article h1 {
   margin-top: 10px;
 }
 .biblio-box dt:first-child { margin-top: 0; }
-.article-body { margin-top: 50px; }
+.article-body { margin-top: 48px; }
 .article-body p {
   margin-bottom: 1.8em;
   text-align: justify;
@@ -279,8 +261,8 @@ article h1 {
   letter-spacing: 0.08em;
 }
 .article-foot {
-  margin-top: 68px;
-  padding-top: 22px;
+  margin-top: 64px;
+  padding-top: 20px;
   border-top: 1px solid var(--ink);
   font-family: 'Zen Kaku Gothic New', sans-serif;
   font-size: 0.76rem;
@@ -301,13 +283,58 @@ footer {
   color: var(--gray);
 }
 
-/* レスポンシブ */
-@media (max-width: 700px) {
-  .layout { grid-template-columns: 1fr; gap: 32px; }
-  .spine-wrap { position: static; max-height: none; overflow-y: visible; }
-  .spine-inner { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
-  .spine-btn { writing-mode: horizontal-tb; min-height: 0; padding: 7px 14px; white-space: nowrap; flex-shrink: 0; }
-  .spine-count { margin-top: 0; margin-left: 6px; }
+/* PCのみ：背表紙縦並びレイアウト */
+@media (min-width: 1024px) {
+  .cat-nav { display: none; }
+  .main-content {
+    display: grid;
+    grid-template-columns: 116px 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .spine-wrap {
+    position: sticky;
+    top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  .spine-btn {
+    writing-mode: vertical-rl;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 0.76rem;
+    letter-spacing: 0.28em;
+    padding: 18px 9px;
+    border: 1px solid var(--hairline);
+    background: var(--card);
+    color: var(--ink);
+    min-height: 130px;
+    cursor: pointer;
+    transition: all .25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .spine-btn:hover { border-color: var(--ai); color: var(--ai); }
+  .spine-btn.active {
+    background: var(--ai);
+    border-color: var(--ai);
+    color: var(--paper);
+  }
+  .spine-count {
+    font-size: 0.62rem;
+    letter-spacing: 0;
+    margin-top: 10px;
+    color: var(--gray);
+  }
+  .spine-btn.active .spine-count { color: rgba(250,250,247,.6); }
+  .list-content { min-width: 0; }
+}
+
+@media (max-width: 1023px) {
+  .spine-wrap { display: none; }
 }
 </style>
 </head>
@@ -328,18 +355,15 @@ footer {
   </div>
 </header>
 
-<div class="layout">
-  <!-- 背表紙ナビ -->
-  <nav>
-    <div class="spine-wrap">
-      <div class="spine-inner" id="spine-nav">
-        <!-- JSで生成 -->
-      </div>
-    </div>
-  </nav>
+<!-- タブレット・スマホ用カテゴリーナビ（横並び） -->
+<div class="cat-nav" id="cat-nav-mobile"></div>
 
-  <!-- メインコンテンツ -->
-  <main>
+<div class="main-content">
+  <!-- PC用背表紙ナビ -->
+  <div class="spine-wrap" id="spine-nav"></div>
+
+  <!-- コンテンツエリア -->
+  <div class="list-content">
     <!-- 記事ページ -->
     <div id="article-view">
       <button class="back-btn" onclick="showList()">← 一覧へ戻る</button>
@@ -360,7 +384,7 @@ footer {
       </div>
       <div id="entries"></div>
     </div>
-  </main>
+  </div>
 </div>
 
 <footer>Noriの書架 — 2026</footer>
@@ -396,31 +420,52 @@ const CATS = [
 ];
 
 // =============================================
-// 以下はロジック（基本的に触らなくてOK）
+// ロジック
 // =============================================
 let activeCat = "すべて";
 let isDark = false;
 
+function getCount(label) {
+  return label === "すべて"
+    ? ENTRIES.length
+    : ENTRIES.filter(e => e.cat === label).length;
+}
+
 function toggleTheme() {
   isDark = !isDark;
   document.body.classList.toggle("dark", isDark);
-  const btn = document.getElementById("theme-btn");
-  btn.textContent = isDark ? "☀️ ライト" : "🌙 ダーク";
+  document.getElementById("theme-btn").textContent = isDark ? "☀️ ライト" : "🌙 ダーク";
 }
 
-function buildSpine() {
-  const nav = document.getElementById("spine-nav");
-  nav.innerHTML = "";
+function buildNav() {
+  // PC用背表紙
+  const spine = document.getElementById("spine-nav");
+  spine.innerHTML = "";
   CATS.forEach(({ label }) => {
-    const count = label === "すべて"
-      ? ENTRIES.length
-      : ENTRIES.filter(e => e.cat === label).length;
     const btn = document.createElement("button");
     btn.className = "spine-btn" + (label === activeCat ? " active" : "");
-    btn.innerHTML = `${label}<span class="spine-count">${count}</span>`;
-    btn.onclick = () => { activeCat = label; buildSpine(); renderList(); showList(); };
-    nav.appendChild(btn);
+    btn.innerHTML = `${label}<span class="spine-count">${getCount(label)}</span>`;
+    btn.onclick = () => selectCat(label);
+    spine.appendChild(btn);
   });
+
+  // タブレット・スマホ用横並び
+  const mobile = document.getElementById("cat-nav-mobile");
+  mobile.innerHTML = "";
+  CATS.forEach(({ label }) => {
+    const btn = document.createElement("button");
+    btn.className = "cat-btn" + (label === activeCat ? " active" : "");
+    btn.innerHTML = `${label}<span class="cat-count">${getCount(label)}</span>`;
+    btn.onclick = () => selectCat(label);
+    mobile.appendChild(btn);
+  });
+}
+
+function selectCat(label) {
+  activeCat = label;
+  buildNav();
+  renderList();
+  showList();
 }
 
 function renderList() {
@@ -469,8 +514,7 @@ function showList() {
   window.scrollTo(0, 0);
 }
 
-// 初期化
-buildSpine();
+buildNav();
 renderList();
 </script>
 </body>
